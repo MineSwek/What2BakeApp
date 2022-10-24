@@ -21,7 +21,15 @@ class _IngredientsApiState extends State<IngredientsApi> {
       }
   """;
 
-  List isSelected = [for (var i = 0; i < 500; i++) false];
+  List? products = [];
+
+  @override
+  void dispose() {
+    Map<String, dynamic> toJson() => {
+      '0': products,
+    };
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +48,14 @@ class _IngredientsApiState extends State<IngredientsApi> {
             return const Text('Loading...');
           }
 
-          List? products = result.data?['allProducts'];
+          int ProdLen = result.data?['allProducts'].length;
+
+          if(ProdLen != products?.length) {
+            List temp = result.data?['allProducts'];
+            [for (var i = products?.length; i! < ProdLen; i++) products?.add([temp[i], false])];
+          }
+
+
 
 
           if (products == null) {
@@ -74,7 +89,7 @@ class _IngredientsApiState extends State<IngredientsApi> {
                               ),
                             ),
                             Text(
-                              '${isSelected.where((e) => e == true).length}/${products.length} składników',
+                              '${products?.where((e) => e[1] == true).length}/${products?.length} składników',
                               style: const TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Lato',
@@ -104,17 +119,17 @@ class _IngredientsApiState extends State<IngredientsApi> {
                           alignment: WrapAlignment.start,
                           spacing: 10,
                           runSpacing: 0,
-                          children: [for (var i = 0; i < products.length; i++) TextButton(
+                          children: [for (var i = 0; i < products!.length; i++) TextButton(
                             style: TextButton.styleFrom(
-                              backgroundColor: isSelected[i] ? const Color(0xFF607C08) : const Color(0xFF505050),
+                              backgroundColor: products![i][1] ? const Color(0xFF607C08) : const Color(0xFF505050),
                             ),
                             onPressed: () {
                               setState(() {
-                                isSelected[i] = !isSelected[i];
+                                products![i][1] = !products![i][1];
                               });
                             },
                             child: Text(
-                                products[i]['name'],
+                                products![i][0]['name'],
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontFamily: 'Lato',
