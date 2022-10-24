@@ -1,7 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:what2bake/services/client.dart';
 
 class RecipesApi extends StatefulWidget {
   const RecipesApi({Key? key}) : super(key: key);
@@ -12,27 +11,12 @@ class RecipesApi extends StatefulWidget {
 
 class _RecipesApiState extends State<RecipesApi> {
 
-  final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
-
-    GraphQLClient(
-      link: HttpLink(
-        'http://130.61.8.73:8080/graphql',
-      ),
-      cache: GraphQLCache(
-        store: HiveStore(),
-      ),
-    ),
-  );
-
   String readRepositories = """
     query{
       allRecipes(filter:{}) {
         id,
         title,
         link,
-        products {
-          id
-        }
       } 
     }
   """;
@@ -40,7 +24,7 @@ class _RecipesApiState extends State<RecipesApi> {
   @override
   Widget build(BuildContext context) {
     return GraphQLProvider(
-      client: client,
+      client: Api().client(),
       child: Query(
         options: QueryOptions(
           document: gql(readRepositories),
@@ -61,7 +45,7 @@ class _RecipesApiState extends State<RecipesApi> {
           }
 
           return SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -73,13 +57,11 @@ class _RecipesApiState extends State<RecipesApi> {
                       (context, index) {
                     final recipe = recipes[index];
                     return Container(
-                      child: Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF393838),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(recipe['id'] + ' ' + recipe['title'] + ' ' + recipe['link'], style: TextStyle(color: Colors.amber),) //'Placeholder $index'
-                      ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF393838),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(recipe['id'] + ' ' + recipe['title'] + ' ' + recipe['link'], style: const TextStyle(color: Colors.amber),) //'Placeholder $index'
                     );
                   },
                 ),

@@ -41,8 +41,12 @@ class _MainWindowState extends State<MainWindow> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: _pages.elementAt(_selectedIndex),
+
+      body: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Container(
+          child: _pages.elementAt(_selectedIndex),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem> [

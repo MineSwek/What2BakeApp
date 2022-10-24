@@ -10,12 +10,12 @@ class Recipes extends StatefulWidget {
 }
 
 class _RecipesState extends State<Recipes> {
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Color(0xFF232323),
       body: CustomScrollView(
-
         slivers: [
           Appbar(),
           RecipesApi(),

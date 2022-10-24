@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -8,7 +10,13 @@ class Appbar extends StatelessWidget {
     'jeden',
     'dwa',
     'trzy',
-    'cztery'
+    'cztery',
+    'pięć',
+    'sześć',
+    'siedem',
+    'osiem',
+    'dziewięć',
+    'dziesięć'
   ];
 
   @override
@@ -29,7 +37,7 @@ class Appbar extends StatelessWidget {
               color: const Color(0xFF383838),
               borderRadius: BorderRadius.circular(15),
             ),
-            child: const SearchBar(_kOptions),
+            child: SearchBar(_kOptions),
           ),
         ],
       ),
@@ -49,7 +57,7 @@ class Appbar extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
-  const SearchBar(this._kOptions, {super.key});
+  SearchBar(this._kOptions, {super.key});
 
   final List<String> _kOptions;
 
@@ -64,9 +72,87 @@ class SearchBar extends StatelessWidget {
           return option.contains(textEditingValue.text.toLowerCase());
         });
       },
+      fieldViewBuilder: ( //Style obszaru wpisywania
+          BuildContext context,
+          TextEditingController textEditingController,
+          FocusNode focusNode,
+          VoidCallback onFieldSubmitted
+      ) {
+        return Row(
+          children: [
+            const Expanded(
+              flex: 1,
+              child: Icon(
+                Icons.search,
+                size: 38,
+              ),
+            ),
+            Expanded(
+              flex: 6,
+              child: TextField(
+                controller: textEditingController,
+                focusNode: focusNode,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+                decoration: const InputDecoration(
+                  hintText: 'Wprowadź odpowiednie argumenty',
+                  hintStyle: TextStyle(
+                    color: Color(0xFF959595),
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ],
+       );
+      },
       onSelected: (String selection) {
         debugPrint(selection);
       },
+      optionsViewBuilder: (
+          BuildContext context,
+          AutocompleteOnSelected<String> onSelected,
+          Iterable<String> options
+      ) {
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            borderRadius: BorderRadius.circular(10),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xFC393838),
+                ),
+                height: min(options.length * 45, 255),
+                width: MediaQuery.of(context).size.width - 32,
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 0, 0),
+                  itemCount: options.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final String option = options.elementAt(index);
+
+                    return GestureDetector(
+                      onTap: () {
+                        onSelected(option);
+                      },
+                      child: SizedBox(
+                        height: 40,
+                        child: ListTile(
+                          title: Text(
+                              '● $option',
+                              style: const TextStyle(color: Colors.white)
+                          )
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+          ),
+        );
+        },
     );
   }
 }
