@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:what2bake/pages/favorites.dart';
 import 'package:what2bake/pages/home.dart';
 import 'package:what2bake/pages/recipes.dart';
 import 'package:what2bake/pages/ingredients.dart';
 import 'package:what2bake/pages/profile.dart';
 import 'package:what2bake/pages/login.dart';
+import 'package:what2bake/services/api.dart';
+import 'package:what2bake/services/model.dart';
 
 void main() async {
-  await initHiveForFlutter();
   runApp(const MaterialApp(home: MainWindow(),));
 }
 

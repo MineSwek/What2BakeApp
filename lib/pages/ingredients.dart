@@ -23,12 +23,11 @@ class _IngredientsState extends State<Ingredients> {
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 1,
-                mainAxisExtent: 250
+                mainAxisExtent: 350
               ),
               delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                  return IngredientsApi(index);
-
+                  return const IngredientsApi();
                 },
                 childCount: 1,
               ),
