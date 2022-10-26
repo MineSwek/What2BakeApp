@@ -16,7 +16,10 @@ final GraphQLClient client = GraphQLClient(
 Future<dynamic> getAllProducts() async {
   var result = await client.query(
     QueryOptions(
-        document: gql(_getAllProducts)
+        document: gql(_getAllProducts),
+        variables: const {
+            "productOrder": ["ALPHABETIC_ASC"]
+        }
     ),
   );
   final prefs = await SharedPreferences.getInstance();
@@ -25,21 +28,21 @@ Future<dynamic> getAllProducts() async {
   if(result.hasException) {
     throw result.exception!;
   }
-
   var json = result.data!["allProducts"];
   List<Product> products = [];
+
   for (var res in json) {
     products.add(Product.fromJson(res));
   }
   return [products, pressed];
 }
 
-Future<List<Recipe>> getRecipes(int page) async {
+Future<dynamic> getRecipes(int page) async {
   final prefs = await SharedPreferences.getInstance();
   var products = prefs.getStringList('0')!.map(int.parse).toList();
 
   if(products.isEmpty) {
-    products = [-1];
+    products = [0];
   }
 
   var result = await client.query(
@@ -48,24 +51,31 @@ Future<List<Recipe>> getRecipes(int page) async {
       variables: {
         "page": page,
         "products": products,
-        "productOrder": "MOST",
-        "orderDirection": "DESC"
+        "productOrder": const ["MOST", "LEAST"]
         }
     )
   );
 
-  var json = result.data!["allRecipes"];
-  print(json);
-  List<Recipe> recipes = [];
-  for (var res in json) {
-    recipes.add(Recipe.fromJson(res));
+  List response = result.data!["allRecipes"];
+  List recipes = [];
+  List<int> similarity = [];
+  for (var res in response) {
+    var temp = Recipe.fromJson(res);
+    var temp2 = 0;
+    for(var i = 0; i < temp.products!.length; i++) {
+      if(products.contains(int.parse(temp.products![i].id))) {
+        temp2++;
+      }
+    }
+    recipes.add(temp);
+    similarity.add((temp2 - temp.products!.length).abs());
   }
-  return recipes;
+  return [recipes, similarity, products];
 }
 
 const _getAllProducts= """
-      query{
-        allProducts{
+      query ProductsWithFilters(\$productOrder: [productOrder]!){
+        allProducts(filter: {productOrder: \$productOrder}){
           id,
           name
         }
@@ -73,11 +83,15 @@ const _getAllProducts= """
   """;
 
 const _getRecipes = """
-    query RecipiesWithFilters(\$page: Int!, \$products: [Int]!, \$productOrder: productOrder!, \$orderDirection: orderDirection!) {
-      allRecipes(filter: {page: \$page, products: \$products, productOrder: \$productOrder, orderDirection: \$orderDirection}){
+    query RecipiesWithFilters(\$page: Int!, \$products: [Int]!, \$productOrder: [recipeProductOrder]!) {
+      allRecipes(filter: {page: \$page, products: \$products, productOrder: \$productOrder}){
         title,
         image,
-        link
+        link,
+        products {
+          id,
+          name
+        }
       }
-    }
+  }
   """;

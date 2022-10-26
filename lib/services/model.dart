@@ -1,19 +1,34 @@
-class Product {
-  String id;
-  String name;
+class Recipe {
+  String? title;
+  String? image;
+  String? link;
+  List<Product>? products;
 
-  Product.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"];
+  Recipe({this.title, this.image, this.link, this.products});
+
+  Recipe.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    image = json['image'];
+    link = json['link'];
+    if (json['products'] != null) {
+      products = <Product>[];
+      json['products'].forEach((v) {
+        products!.add(Product.fromJson(v));
+      });
+    }
+  }
+
 }
 
-class Recipe {
-  String image;
-  String title;
-  String link;
+class Product {
+  late String id;
+  late String name;
 
-  Recipe.fromJson(Map<String, dynamic> json)
-      : image = json["image"],
-        title = json["title"],
-        link = json["link"];
+  Product({required this.id, required this.name});
+
+  Product.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
 }

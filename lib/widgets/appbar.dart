@@ -28,7 +28,14 @@ class Appbar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SvgPicture.asset('assets/Logo.svg'),
-              const CircleAvatar(),
+              const CircleAvatar(
+                radius: 30,
+                backgroundColor: Color(0xFF414141),
+                child: CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage('https://steamuserimages-a.akamaihd.net/ugc/771727728500756344/8B4BCBE0ECA3A768383E6023D21D6037073E2814/'),
+                ),
+              ),
             ],
           ),
           Container(

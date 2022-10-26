@@ -5,11 +5,9 @@ import 'package:what2bake/pages/recipes.dart';
 import 'package:what2bake/pages/ingredients.dart';
 import 'package:what2bake/pages/profile.dart';
 import 'package:what2bake/pages/login.dart';
-import 'package:what2bake/services/api.dart';
-import 'package:what2bake/services/model.dart';
 
 void main() async {
-  runApp(const MaterialApp(home: MainWindow(),));
+  runApp(const MaterialApp(home: MainWindow()));
 }
 
 class MainWindow extends StatefulWidget {

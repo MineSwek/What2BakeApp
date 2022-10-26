@@ -29,6 +29,7 @@ class _IngredientsApiState extends State<IngredientsApi> {
 
   @override
   Widget build(BuildContext context) {
+          var kontroler = ScrollController();
           return Container(
             decoration: BoxDecoration(
               color: const Color(0xFF393838),
@@ -81,42 +82,48 @@ class _IngredientsApiState extends State<IngredientsApi> {
                             height: 3,
                           ),
                           Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Wrap(
-                                      crossAxisAlignment: WrapCrossAlignment.start,
-                                      alignment: WrapAlignment.start,
-                                      spacing: 10,
-                                      runSpacing: 0,
-                                      children: [for (var i = 0; i < products.length; i++) TextButton(
-                                          style: TextButton.styleFrom(
-                                            backgroundColor: pressed.contains(products[i].id) ? const Color(0xFF607C08) : const Color(0xFF505050),
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              if(pressed.contains(products[i].id)) {
-                                                pressed.remove(products[i].id);
-                                              } else {
-                                                pressed.add(products[i].id);
-                                              }
-                                              update();
-                                            });
-                                          },
-                                          child: Text(
-                                            products[i].name,
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              fontFamily: 'Lato',
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFFD1D1D1),
+                            child: Scrollbar(
+                              controller: kontroler,
+                              interactive: true,
+                              thumbVisibility: true,
+                              child: SingleChildScrollView(
+                                controller: kontroler,
+                                scrollDirection: Axis.vertical,
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Wrap(
+                                        crossAxisAlignment: WrapCrossAlignment.start,
+                                        alignment: WrapAlignment.start,
+                                        spacing: 10,
+                                        runSpacing: 0,
+                                        children: [for (var i = 0; i < products.length; i++) TextButton(
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: pressed.contains(products[i].id) ? const Color(0xFF607C08) : const Color(0xFF505050),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if(pressed.contains(products[i].id)) {
+                                                  pressed.remove(products[i].id);
+                                                } else {
+                                                  pressed.add(products[i].id);
+                                                }
+                                                update();
+                                              });
+                                            },
+                                            child: Text(
+                                              products[i].name,
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: 'Lato',
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFFD1D1D1),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ]
+                                        ]
+                                    ),
                                   ),
                                 ),
                               ),
@@ -125,7 +132,7 @@ class _IngredientsApiState extends State<IngredientsApi> {
                         ],
                     );
                   } else {
-                    return const CircularProgressIndicator();
+                    return const Center(child: CircularProgressIndicator());
                   }
                 }
             ),

@@ -39,6 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.0.15
   graphql: ^5.1.1
+  url_launcher: ^6.1.6
 
 dev_dependencies:
   flutter_test:
