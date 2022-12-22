@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -33,7 +32,7 @@ class Appbar extends StatelessWidget {
                 backgroundColor: Color(0xFF414141),
                 child: CircleAvatar(
                   radius: 25,
-                  backgroundImage: NetworkImage('https://steamuserimages-a.akamaihd.net/ugc/771727728500756344/8B4BCBE0ECA3A768383E6023D21D6037073E2814/'),
+                  backgroundImage: AssetImage('assets/avatar.png'),
                 ),
               ),
             ],
@@ -44,7 +43,7 @@ class Appbar extends StatelessWidget {
               color: const Color(0xFF383838),
               borderRadius: BorderRadius.circular(15),
             ),
-            child: SearchBar(_kOptions),
+            child: const SearchBar(_kOptions),
           ),
         ],
       ),
@@ -54,7 +53,7 @@ class Appbar extends StatelessWidget {
       flexibleSpace: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/Background.png',),
+            image: AssetImage('assets/appbarBackground.png',),
             fit: BoxFit.fitWidth,
           ),
          ),
@@ -64,7 +63,7 @@ class Appbar extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
-  SearchBar(this._kOptions, {super.key});
+  const SearchBar(this._kOptions, {super.key});
 
   final List<String> _kOptions;
 

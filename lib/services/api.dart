@@ -18,42 +18,58 @@ Future<dynamic> getAllProducts() async {
     QueryOptions(
         document: gql(_getAllProducts),
         variables: const {
-            "productOrder": ["ALPHABETIC_ASC"]
+          "productOrder": ["ALPHABETIC_ASC"]
         }
     ),
   );
+
+  var result2 = await client.query(
+    QueryOptions(
+      document: gql(_getAllCategories),
+    ),
+  );
+
   final prefs = await SharedPreferences.getInstance();
-  var pressed = prefs.getStringList('0')!;
+  var pressed = prefs.getStringList('0') ?? [];
 
   if(result.hasException) {
     throw result.exception!;
   }
+
+  if(result2.hasException) {
+    throw result2.exception!;
+  }
+
   var json = result.data!["allProducts"];
   List<Product> products = [];
+
+  var json2 = result2.data!["allCategories"];
+  List<Category> categories = [];
 
   for (var res in json) {
     products.add(Product.fromJson(res));
   }
-  return [products, pressed];
+
+  for (var res2 in json2) {
+    categories.add(Category.fromJson(res2));
+  }
+
+  return [products, pressed, categories];
 }
 
 Future<dynamic> getRecipes(int page) async {
   final prefs = await SharedPreferences.getInstance();
-  var products = prefs.getStringList('0')!.map(int.parse).toList();
-
-  if(products.isEmpty) {
-    products = [0];
-  }
+  var products = prefs.getStringList('0')?.isEmpty == false ? prefs.getStringList('0')!.map(int.parse).toList() : [0];
 
   var result = await client.query(
-    QueryOptions(
-      document: gql(_getRecipes),
-      variables: {
-        "page": page,
-        "products": products,
-        "productOrder": const ["MOST", "LEAST"]
-        }
-    )
+      QueryOptions(
+          document: gql(_getRecipes),
+          variables: {
+            "page": page,
+            "products": products,
+            "productOrder": const ["MOST", "LEAST"]
+          }
+      )
   );
 
   List response = result.data!["allRecipes"];
@@ -76,6 +92,19 @@ Future<dynamic> getRecipes(int page) async {
 const _getAllProducts= """
       query ProductsWithFilters(\$productOrder: [productOrder]!){
         allProducts(filter: {productOrder: \$productOrder}){
+          id,
+          name,
+          category {
+            id,
+            name
+          }
+        }
+      }
+  """;
+
+const _getAllCategories = """
+      query {
+        allCategories {
           id,
           name
         }

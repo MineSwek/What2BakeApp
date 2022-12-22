@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:what2bake/services/api.dart';
 import 'package:what2bake/widgets/appbar.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:what2bake/services/api.dart';
 
-class RecipesApi extends StatefulWidget {
-  const RecipesApi({Key? key}) : super(key: key);
+class RecipesBody extends StatefulWidget {
+  const RecipesBody({super.key});
 
   @override
-  State<RecipesApi> createState() => _RecipesApiState();
+  State<RecipesBody> createState() => _RecipesBodyState();
 }
 
-class _RecipesApiState extends State<RecipesApi> {
+class _RecipesBodyState extends State<RecipesBody> {
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _RecipesApiState extends State<RecipesApi> {
           recipes = snapshot.data[0];
           similarity = snapshot.data[1];
           products = snapshot.data[2];
-          if(products[0] == 0) products = [];
+
           newsListSliver = SliverPadding(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                               sliver: SliverGrid(
@@ -58,6 +59,15 @@ class _RecipesApiState extends State<RecipesApi> {
                                     sim = "Brakuje ci ${similarity[index]} składników";
                                     col = Colors.amber;
                                   }
+
+                                  int howManyProducts = 0;
+                                  for(var i = 0; i < products.length; i++) {
+                                    for(var j = 0; j < recipes[index].products.length; j++) {
+                                      if(recipes[index].products[j].id == products[i].toString()) howManyProducts += 1;
+                                    }
+
+                                  }
+
                                   final ScrollKontroler = ScrollController();
                                   return GestureDetector(
                                     onTap: () {
@@ -65,8 +75,8 @@ class _RecipesApiState extends State<RecipesApi> {
                                           context: context,
                                           builder: (context) {
                                             return Dialog(
-                                              backgroundColor: Color(0xFF242323),
-                                              insetPadding: EdgeInsets.symmetric(vertical: 90, horizontal: 15),
+                                              backgroundColor: const Color(0xFF242323),
+                                              insetPadding: const EdgeInsets.symmetric(vertical: 90, horizontal: 15),
                                               shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(10)
                                               ),
@@ -96,7 +106,8 @@ class _RecipesApiState extends State<RecipesApi> {
                                                           child: Column(
                                                             crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
-                                                              SizedBox(
+                                                              Container(
+                                                                margin: const EdgeInsets.only(top: 10),
                                                                 height: 47,
                                                                 width: 257,
                                                                 child: TextButton(
@@ -150,9 +161,12 @@ class _RecipesApiState extends State<RecipesApi> {
                                                               padding: const EdgeInsets.all(20),
                                                               child: Row(
                                                                 children: [
-                                                                  const CircleAvatar(),
+                                                                  SvgPicture.asset(
+                                                                      'assets/categories/1.svg',
+                                                                    width: 40,
+                                                                  ),
                                                                   Container(
-                                                                    margin: const EdgeInsets.only(left: 20),
+                                                                    margin: const EdgeInsets.only(left: 15),
                                                                     child: Column(
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
@@ -166,7 +180,7 @@ class _RecipesApiState extends State<RecipesApi> {
                                                                           ),
                                                                         ),
                                                                         Text(
-                                                                          '${products.length.toString()}/${recipes[index].products.length} składników',
+                                                                          '${howManyProducts.toString()}/${recipes[index].products.length} składników',
                                                                           style: const TextStyle(
                                                                             fontSize: 15,
                                                                             fontFamily: 'Lato',

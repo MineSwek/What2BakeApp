@@ -23,12 +23,27 @@ class Recipe {
 class Product {
   late String id;
   late String name;
-
-  Product({required this.id, required this.name});
+  Category? category;
+  Product({required this.id, required this.name, this.category});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
+    category = json['category'] != null
+        ? Category.fromJson(json['category'])
+        : null;
   }
 
+}
+
+class Category {
+  String? id;
+  String? name;
+
+  Category({this.id, this.name});
+
+  Category.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
 }

@@ -16,7 +16,7 @@ class _HomeState extends State<Favorites> {
       backgroundColor: Color(0xFF232323),
       body: CustomScrollView(
         slivers: [
-          Appbar()
+          Appbar(),
         ],
       ),
     );
